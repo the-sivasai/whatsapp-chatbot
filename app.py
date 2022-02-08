@@ -3,11 +3,7 @@ from twilio.twiml.messaging_response import MessagingResponse
 
 app = Flask(__name__)
 
-state = {
-    "status": "main",
-    "isLoggedIn": False
-}
-
+status = {} # Using status to store the number to ensure IsLoggedIn as well as "Main Page(first menu)" or "FAQ_page (second menu)"
 
 @app.route("/", methods=["get", "post"])
 def reply():
@@ -15,9 +11,9 @@ def reply():
     number = request.form.get("From")
     number = number.replace("whatsapp:", "")
     option = None
-
     res = MessagingResponse()
-    if state["isLoggedIn"] == False:
+    print(status)
+    if number not in status:
         menu1 = res.message("🤖 "
                             "Hi! 👋 Thanks for contacting *SwasthVritta Health Solutions* 💚 "
                             "\nWhat can we do for you today...🌟"
@@ -31,11 +27,11 @@ def reply():
                             "\n\n ```Type '/bye' to exit Bot``` ")
         menu1.media("https://media-exp1.licdn.com/dms/image/C4E0BAQEZGVoTS6N5Yw/company-logo_200_200/0/1637908454698?e"
                     "=2159024400&v=beta&t=QqFIOpiv9L6ltT23JAgsy8b6YrvOQa5w6XNeN52fUOI")
-        state["isLoggedIn"] = True
+        status[number] = "main"
         return str(res)
 
     if text.strip().lower() == "/bye":
-        state["isLoggedIn"] = False
+        status.pop(number)
         res.message("Thank you for using for the chatbot"
                     "\nHave a good day 😃🍀 ")
         return str(res)
@@ -47,7 +43,7 @@ def reply():
                     "\nType 0️⃣ to go back to *\"Main Menu\"*")
         return str(res)
 
-    if state["status"] == "main":
+    if status[number] == "main":
 
         if option == 0:
             menu2 = res.message("\nYou can choose from one of the options below:"
@@ -146,7 +142,7 @@ def reply():
                         "https://prakriti-assessment.stackblitz.io")
 
         elif option == 3:
-            state["status"] = "faq_menu"
+            status[number] = "faq_menu"
             res.message("FAQ Menu\n\n"
                         "\n1️⃣ Are your Products Safe?"
                         "\n2️⃣ Return Policies"
@@ -169,7 +165,7 @@ def reply():
         if option != 0:
             res.message("\nType 0️⃣ to go back to *\"Main Menu\"*")
 
-    elif state["status"] == "faq_menu":
+    elif status[number] == "faq_menu":
 
         if option == 0:
             menu3 = res.message("\nYou can choose from one of the options below:"
@@ -181,7 +177,7 @@ def reply():
 
                                 "\n\n ```Type '/bye' to exit Bot``` ")
             # menu3.media("https://drive.google.com/uc?export=view&id=10zRBV7yzDlNoOZN6vbyk578IRxDZKwnQ")
-            state["status"] = "main"
+            status[number] = "main"
 
         elif option == 1:
             res.message(
