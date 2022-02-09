@@ -6,7 +6,7 @@ app = Flask(__name__)
 status = {}  # Using status to store the number to ensure IsLoggedIn as well as "Main Page(first menu)" or "FAQ_page (second menu)"
 
 
-# sample --> { number :  [ menu , human_support (False) ] }
+# sample --> { number :  [ "menu"|"faq_menu" , "human_support"|"bot_support" ] }
 
 @app.route("/", methods=["get", "post"])
 def reply():
@@ -40,13 +40,12 @@ def reply():
                     "\nHave a good day 😃🍀 ")
         return str(res)
 
-    if text.strip().upper() == "YES" and status[number][1] == True:
-        status[number] = ["human_support", True]
+    if text.strip().upper() == "YES" and status[number][1] == "human_support":
         res.message("🤖 \nPlease wait while I connect you to a human")
         res.message("🤖 \nWe are away right at the moment, our team is currently operating at limited capacity,"
                     "\nWe appreciate your patience🙏")
         res.message("🤖 \nPlease leave your question, our support team will get back to you as soon as possible🤞")
-        status[number] = ["main", False]
+        status[number] = ["main", "bot_support"]
         return str(res)
 
     if status[number][0] == "main":
@@ -68,7 +67,7 @@ def reply():
                                 "\n\n ```Type '/bye' to exit Bot``` "
                                 )
             # menu2.media("https://drive.google.com/uc?export=view&id=10zRBV7yzDlNoOZN6vbyk578IRxDZKwnQ")
-            status[number] = ["main", False]
+            status[number] = ["main", "bot_support"]
         elif option == 1:
             res.message(
                 "We currently serve the following items: \n\n✅ CHASS  \n✅ DIPS \n✅ SAUCES \n✅ CHUTNEY \n"
@@ -149,12 +148,12 @@ def reply():
                              "- _French Mustard_ \n"
                              "- _+Many other herbs_")
             p4.media("https://drive.google.com/uc?export=view&id=1feosHca2-jtbe3MgVjG85ojjJK_xfmuW")
-            status[number] = ["main", False]
+            status[number] = ["main", "bot_support"]
 
         elif option == 2:
             res.message("Please visit our _Prakriti Assessment_ link for assessing your 'Unique Body Type'\n"
                         "https://prakriti-assessment.stackblitz.io")
-            status[number] = ["main", False]
+            status[number] = ["main", "bot_support"]
 
         elif option == 3:
             status[number][0] = "faq_menu"
@@ -178,11 +177,7 @@ def reply():
             res.message("Is your query resolved?"
                         "\nDo you want us to connect you to our customer support agent 👨 or 👩?"
                         "\nIf so, please type YES.")
-            status[number][1] = True
-
-        # elif option == 5:
-        #     status[number] = "human_support"
-
+            status[number][1] = "human_support"
         else:
             res.message("Please enter a valid response"
                         "\nType 0️⃣ to view the *Main Menu*")
@@ -206,7 +201,7 @@ def reply():
 
                                 "\n\n ```Type '/bye' to exit Bot``` ")
             # menu3.media("https://drive.google.com/uc?export=view&id=10zRBV7yzDlNoOZN6vbyk578IRxDZKwnQ")
-            status[number] = ["main", False]
+            status[number] = ["main", "bot_support"]
         elif option == 1:
             res.message(
                 "All products served in *'SwasthVritta Health Solutions'* are Food Safety and Standards Authority of "
@@ -224,14 +219,6 @@ def reply():
         else:
             res.message("Please enter a valid response"
                         "\nType 0️⃣ to go back to *Main Menu*")
-
-    # elif status[number] == ["human_support", True]:
-    #     res.message("🤖 \nPlease wait while I connect you to a human")
-    #     res.message("🤖 \nWe are away right at the moment, our team is currently operating at limited capacity,"
-    #                 "\nWe appreciate your patience🙏")
-    #     res.message("🤖 \nPlease leave your question, our support team will get back to you as soon as possible🤞")
-    #     status[number] = ["main", False]
-
     return str(res)
 
 
