@@ -1,9 +1,12 @@
 from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
+import time
 
 app = Flask(__name__)
+status = {}  # Using status to store the number to ensure IsLoggedIn as well as "Main Page(first menu)" or "FAQ_page (second menu)"
 
-status = {} # Using status to store the number to ensure IsLoggedIn as well as "Main Page(first menu)" or "FAQ_page (second menu)"
+
+# sample --> { number :  [ menu , human_support (False) ] }
 
 @app.route("/", methods=["get", "post"])
 def reply():
@@ -13,6 +16,7 @@ def reply():
     option = None
     res = MessagingResponse()
     print(status)
+
     if number not in status:
         menu1 = res.message("🤖 "
                             "Hi! 👋 Thanks for contacting *SwasthVritta Health Solutions* 💚 "
@@ -27,7 +31,7 @@ def reply():
                             "\n\n ```Type '/bye' to exit Bot``` ")
         menu1.media("https://media-exp1.licdn.com/dms/image/C4E0BAQEZGVoTS6N5Yw/company-logo_200_200/0/1637908454698?e"
                     "=2159024400&v=beta&t=QqFIOpiv9L6ltT23JAgsy8b6YrvOQa5w6XNeN52fUOI")
-        status[number] = "main"
+        status[number] = ["main", False]
         return str(res)
 
     if text.strip().lower() == "/bye":
@@ -36,14 +40,22 @@ def reply():
                     "\nHave a good day 😃🍀 ")
         return str(res)
 
-    try:
-        option = int(text)
-    except:
-        res.message("Please enter a valid response."
-                    "\nType 0️⃣ to go back to *\"Main Menu\"*")
+    if text.strip().upper() == "YES" and status[number][1] == True:
+        status[number] = ["human_support", True]
+        res.message("🤖 \nPlease wait while I connect you to a human")
+        res.message("🤖 \nWe are away right at the moment, our team is currently operating at limited capacity,"
+                    "\nWe appreciate your patience🙏")
+        res.message("🤖 \nPlease leave your question, our support team will get back to you as soon as possible🤞")
+        status[number] = ["main", False]
         return str(res)
 
-    if status[number] == "main":
+    if status[number][0] == "main":
+        try:
+            option = int(text)
+        except:
+            res.message("Please enter a valid response."
+                        "\nType 0️⃣ to view the *Main Menu*")
+            return str(res)
 
         if option == 0:
             menu2 = res.message("\nYou can choose from one of the options below:"
@@ -56,6 +68,7 @@ def reply():
                                 "\n\n ```Type '/bye' to exit Bot``` "
                                 )
             # menu2.media("https://drive.google.com/uc?export=view&id=10zRBV7yzDlNoOZN6vbyk578IRxDZKwnQ")
+            status[number] = ["main", False]
         elif option == 1:
             res.message(
                 "We currently serve the following items: \n\n✅ CHASS  \n✅ DIPS \n✅ SAUCES \n✅ CHUTNEY \n"
@@ -136,18 +149,22 @@ def reply():
                              "- _French Mustard_ \n"
                              "- _+Many other herbs_")
             p4.media("https://drive.google.com/uc?export=view&id=1feosHca2-jtbe3MgVjG85ojjJK_xfmuW")
+            status[number] = ["main", False]
 
         elif option == 2:
             res.message("Please visit our _Prakriti Assessment_ link for assessing your 'Unique Body Type'\n"
                         "https://prakriti-assessment.stackblitz.io")
+            status[number] = ["main", False]
 
         elif option == 3:
-            status[number] = "faq_menu"
+            status[number][0] = "faq_menu"
             res.message("FAQ Menu\n\n"
+                        "Type"
                         "\n1️⃣ Are your Products Safe?"
                         "\n2️⃣ Return Policies"
                         "\n3️⃣ Discounts"
-                        "\n4️⃣ What are our working hours?")
+                        "\n4️⃣ What are our working hours?"
+                        "\n\n Type 0️⃣ to go back to *Main Menu*")
 
         elif option == 4:
             res.message("At SwasthVritta 💚\n- We are availing our users the platform where they can consult with "
@@ -158,14 +175,26 @@ def reply():
                         '\n\nAccess our official website \nhttps://www.swasthvritta.com for more services.'
                         '\n\nAnd do not forget to follow us on Linkedin \nhttps://in.linkedin.com/company/swasthvritta-health-solutions .'
                         '\n\nMail us at swasthvrittahealthsolutions@gmail.com.')
+            res.message("Is your query resolved?"
+                        "\nDo you want us to connect you to our customer support agent 👨 or 👩?"
+                        "\nIf so, please type YES.")
+            status[number][1] = True
+
+        # elif option == 5:
+        #     status[number] = "human_support"
+
         else:
             res.message("Please enter a valid response"
-                        "\nType 0️⃣ to go back to *\"Main Menu\"*")
+                        "\nType 0️⃣ to view the *Main Menu*")
 
-        if option != 0:
-            res.message("\nType 0️⃣ to go back to *\"Main Menu\"*")
+    elif status[number][0] == "faq_menu":
 
-    elif status[number] == "faq_menu":
+        try:
+            option = int(text)
+        except:
+            res.message("Please enter a valid response."
+                        "\nType 0️⃣ to go back to *Main Menu*")
+            return str(res)
 
         if option == 0:
             menu3 = res.message("\nYou can choose from one of the options below:"
@@ -177,8 +206,7 @@ def reply():
 
                                 "\n\n ```Type '/bye' to exit Bot``` ")
             # menu3.media("https://drive.google.com/uc?export=view&id=10zRBV7yzDlNoOZN6vbyk578IRxDZKwnQ")
-            status[number] = "main"
-
+            status[number] = ["main", False]
         elif option == 1:
             res.message(
                 "All products served in *'SwasthVritta Health Solutions'* are Food Safety and Standards Authority of "
@@ -190,12 +218,19 @@ def reply():
         elif option == 3:
             res.message(
                 "Unfortunately, we currently don’t provide any discount except for what you see on our website. ")
-
         elif option == 4:
             res.message("We currently operate from 9 a.m. to 6 p.m. "
                         "Go to 'Main Menu' to know our contacts details.")
         else:
-            res.message("Please enter a valid response")
+            res.message("Please enter a valid response"
+                        "\nType 0️⃣ to go back to *Main Menu*")
+
+    # elif status[number] == ["human_support", True]:
+    #     res.message("🤖 \nPlease wait while I connect you to a human")
+    #     res.message("🤖 \nWe are away right at the moment, our team is currently operating at limited capacity,"
+    #                 "\nWe appreciate your patience🙏")
+    #     res.message("🤖 \nPlease leave your question, our support team will get back to you as soon as possible🤞")
+    #     status[number] = ["main", False]
 
     return str(res)
 
