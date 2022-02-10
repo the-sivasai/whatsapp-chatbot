@@ -68,14 +68,14 @@ def reply():
                                "reply"] + "\n" + "We currently serve the following items: \n\n✅ CHASS  \n✅ DIPS \n✅ SAUCES \n✅ CHUTNEY " \
                                                  "\n\n Here are the details"
             p1 = res["reply"] = res["reply"] + "\n" + \
-                                "\nCHASS 🥛" \
+                                "\n *1. CHASS 🥛* " \
                                 "\n\n_₹29.00-₹39.00_" \
                                 "\n_Benefits:_" \
                                 "\n_Helpful in 50+ diseases_"
             # p1.media("https://drive.google.com/uc?export=view&id=1QRsuh6IPdaTKzV66n86sWVn2VTUWNnLe")
 
             p2 = res["reply"] = res["reply"] + "\n" + \
-                                "DIPS \n" \
+                                "*2. DIPS* \n" \
                                 "\n" \
                                 "₹399.00-₹599.00\n" \
                                 "\n" \
@@ -98,7 +98,7 @@ def reply():
                                 "- _+Many other herbs_"
             # p2.media("https://drive.google.com/uc?export=view&id=1OA5PmPLGh6HBdJ8tdZaCyf1iqn9-s9nf")
 
-            p3 = res["reply"] = res["reply"] + "\n" + "Sauces \n\n" \
+            p3 = res["reply"] = res["reply"] + "\n" + "*3. Sauces* \n\n" \
                                                       "₹399.00-₹599.00\n" \
                                                       "\n" \
                                                       "Coriander Sauce Ingredients : \n" \
@@ -122,7 +122,7 @@ def reply():
                                                       "- _+Many other Herbs_"
             # p3.media("https://drive.google.com/uc?export=view&id=17ZFffRhZd774a3PlDv1mpC3sDqxwcY96")
 
-            p4 = res["reply"] = res["reply"] + "\n" + "Chutney \n" \
+            p4 = res["reply"] = res["reply"] + "\n" + "*4. Chutney* \n" \
                                                       "\n" \
                                                       "₹299.00-₹499.00\n" \
                                                       "\n" \
@@ -170,7 +170,7 @@ def reply():
                                                  '\n\nFollow Swasthvritta on Instagram \nhttps://www.instagram.com/swasthvritta to get recent updates.' \
                                                  '\n\nAccess our official website \nhttps://www.swasthvritta.com for more services.' \
                                                  '\n\nAnd do not forget to follow us on Linkedin \nhttps://in.linkedin.com/company/swasthvritta-health-solutions .' \
-                                                 '\n\nMail us at swasthvrittahealthsolutions@gmail.com.'
+                                                 '\n\nMail us at swasthvrittahealthsolutions@gmail.com'
             res["reply"] = res["reply"] + "\n" + "Is your query resolved?" \
                                                  "\nDo you want us to connect you to our customer support agent 👨 or 👩?" \
                                                  "\nIf so, please type YES."
